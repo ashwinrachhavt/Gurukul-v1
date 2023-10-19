@@ -1,15 +1,15 @@
 import { currentUser } from "@clerk/nextjs"
-import { auth } from "@clerk/nextjs"
 
-import supabaseClient from '@/lib/supabase-client'
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 
-interface HomeLayoutProps {
+interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export default async function HomeLayout({ children }: HomeLayoutProps) {
+export default async function ProblemsTableLayout({
+  children,
+}: DashboardLayoutProps) {
   const user = await currentUser()
 
   return (

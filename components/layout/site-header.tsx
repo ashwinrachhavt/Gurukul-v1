@@ -106,22 +106,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 </Link>
               </>
             )}
-            <Link
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                  className: "md:ml-3",
-                })}
-              >
-                <Icons.gitHub className="h-4 w-4 md:h-5 md:w-5" />
-                <span className="sr-only">GitHub</span>
-              </div>
-            </Link>
             <ThemeToggle />
           </nav>
         </div>

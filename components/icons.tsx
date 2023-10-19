@@ -11,6 +11,7 @@ import {
   Terminal,
   Twitter,
   User,
+  Gem,
   type LucideIcon,
   type LucideProps,
 } from "lucide-react"
@@ -21,7 +22,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   twitter: Twitter,
-  logo: ChefHat,
+  logo: Gem,
   user: User,
   terminal: Terminal,
   settings: Settings,
