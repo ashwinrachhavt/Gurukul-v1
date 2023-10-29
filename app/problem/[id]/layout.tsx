@@ -3,13 +3,13 @@ import { currentUser } from "@clerk/nextjs"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 
-interface DashboardLayoutProps {
+interface ProblemLayoutProps {
   children: React.ReactNode
 }
 
 export default async function ProblemsTableLayout({
   children,
-}: DashboardLayoutProps) {
+}: ProblemLayoutProps) {
   const user = await currentUser()
 
   return (

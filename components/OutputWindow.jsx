@@ -38,8 +38,19 @@ const OutputWindow = ({ outputDetails }) => {
   return (
     <>
       <h1 className="text-3xl font-bold">Output</h1>
-      <div className="w-full min-h-[100px] h-56 bg-[#1e293b] rounded-md text-white font-normal text-sm overflow-y-auto">
-          {outputDetails ? <>{getOutput()}</> : null}
+      <div 
+        style={{
+          width: '100%',
+          height: '110px',
+          backgroundColor: '#2D3748', // This is the hexadecimal code for dark blue
+          color: 'white',
+          fontSize: 'small',
+          overflowY: 'auto',
+          borderRadius: '5px', // Optional: To have rounded corners
+          padding: '10px' // Optional: To have some spacing inside the textarea
+        }}
+      >
+         {outputDetails ? <>{getOutput()}</> : null}
       </div>
     </>
   );

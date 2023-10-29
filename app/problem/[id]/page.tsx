@@ -36,6 +36,12 @@ const ProblemDetail = () => {
   // Use a union type for showHint
   const [showHint, setShowHint] = useState<null | number>(null);
   
+  const [lastUnlockedHint, setLastUnlockedHint] = useState(0);
+
+  const handleHintClick = (hintNumber: number) => {
+    setLastUnlockedHint(Math.max(lastUnlockedHint, hintNumber));
+  };
+  
   useEffect(() => {
     if (id) {
       setDebugInfo(prev => ({ ...prev, id }));
@@ -81,14 +87,32 @@ function solve() {
       <p className="test-cases text-gray-600 mb-4">{problem.Test_Cases}</p>
 
       <div className="hints-section mb-4">
-        <button className="hint-toggle-btn mr-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowHint(1)}>Hint 1</button>
-        <button className="hint-toggle-btn mr-2 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowHint(2)}>Hint 2</button>
-        <button className="hint-toggle-btn bg-blue-500 text-white px-4 py-2 rounded" onClick={() => setShowHint(3)}>Hint 3</button>
-      </div>
+          <button 
+            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            onClick={() => handleHintClick(1)}
+          >
+            Hint 1
+          </button>
+          <button 
+            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 2 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
+            onClick={() => handleHintClick(2)}
+            disabled={lastUnlockedHint < 1}
+          >
+            Hint 2
+          </button>
+          <button 
+            className={`hint-toggle-btn px-4 py-2 rounded ${lastUnlockedHint >= 3 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
+            onClick={() => handleHintClick(3)}
+            disabled={lastUnlockedHint < 2}
+          >
+            Hint 3
+          </button>
+        </div>
       
-      {showHint === 1 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hints_1}</div>}
-      {showHint === 2 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
-      {showHint === 3 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
+      
+        {lastUnlockedHint >= 1 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hints_1}</div>}
+        {lastUnlockedHint >= 2 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
+        {lastUnlockedHint >= 3 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
 
       <div className="editor-section mb-4">
           <Landing />

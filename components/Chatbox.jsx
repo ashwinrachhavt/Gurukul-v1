@@ -1,34 +1,49 @@
 'use client';
 
 import { useChat } from 'ai/react';
+import axios from 'axios';
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+
+  const fetcher = (messages) => {
+    return axios.post('/app/api/chat', { messages });
+  };
+
+  const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
 
   return (
-    <div className="w-full bg-gray-800 p-6 rounded-md shadow-lg mb-6">
-      <div className="overflow-y-auto h-64 mb-4">
+    <div style={{ width: '100%', backgroundColor: '#2D3748', padding: '24px', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 10%)', marginBottom: '24px' }}>
+      <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '256px', marginBottom: '16px' }}>
         {messages.map(m => (
           <div 
             key={m.id} 
-            className={`mb-2 p-2 rounded-lg ${m.role === 'user' ? 'bg-blue-700' : 'bg-green-700'}`}
+            style={{
+                marginBottom: '8px', 
+                padding: '8px', 
+                borderRadius: '8px', 
+                backgroundColor: m.role === 'user' ? '#2B6CB0' : '#48BB78',
+                // Add these properties to wrap the text
+                whiteSpace: 'pre-wrap', 
+                overflowWrap: 'break-word',
+                wordBreak: 'break-word'
+            }}
           >
-            <span className="font-bold text-white">{m.role}:</span> 
-            <span className="text-white">{m.content}</span>
+            <span style={{ fontWeight: 'bold', color: 'white' }}>{m.role}:</span> 
+            <span style={{ color: 'white' }}>{m.content}</span>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-4">
+      <form onSubmit={handleSubmit} style={{ marginTop: '16px' }}>
         <input 
           value={input} 
           placeholder="Say something..."
           onChange={handleInputChange}
-          className="w-full px-3 py-2 rounded-md text-black"
+          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', color: 'black' }}
         />
         <button 
           type="submit"
-          className="mt-2 px-4 py-2 rounded-md bg-blue-500 text-white"
+          style={{ marginTop: '8px', padding: '8px 16px', borderRadius: '8px', backgroundColor: '#9F7AEA', color: 'white' }}
         >
           Send
         </button>
