@@ -33,12 +33,12 @@ const ProblemsTable: FC = () => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="min-w-full  min-h-full p-6 max-w-md mx-auto bg-white rounded-xl shadow-md items-center ">
+    <div className="min-w-full  min-h-full p-6 max-w-md mx-auto bg-background rounded-xl shadow-md items-center ">
       <div className="flex-shrink-0">
         {/* Your gradient border goes here */}
         <div className="p-5 border-4 border-gradient rounded-xl">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-background-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
@@ -46,7 +46,7 @@ const ProblemsTable: FC = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acceptance</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-background divide-y divide-gray-200">
               {problems.map((problem) => (
                 <tr key={problem.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -54,11 +54,11 @@ const ProblemsTable: FC = () => {
                       {problem.Title}
                     </Link>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{problem.Difficulty}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{problem.Tags}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{problem.Acceptance}%</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Link href={`/problem/${problem.id}`} className="text-white bg-green-500 hover:bg-green-700 px-4 py-2 rounded">
+                  <td className="px-6 py-4 whitespace-nowrap text-foreground">{problem.Difficulty}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-foreground">{problem.Tags}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">{problem.Acceptance}%</td>
+                  <td className="px-6 py-4 whitespace-nowrap ">
+                    <Link href={`/problem/${problem.id}`} className="text-white bg-blue-500 hover:bg-green-700 px-4 py-2 rounded">
                         Solve
                     </Link>
                   </td>

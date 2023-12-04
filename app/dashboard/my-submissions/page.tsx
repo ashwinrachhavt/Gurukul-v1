@@ -1,5 +1,31 @@
-"use client";
-import { useAuth, auth, useUser } from "@clerk/nextjs";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { connect } from "@planetscale/database"
+import { drizzle } from 'drizzle-orm/planetscale-serverless'
+import { db } from "../../../lib/db/config"
+import { submissions } from "../../../lib/db/schema"
+import { useAuth, auth, useUser, currentUser } from "@clerk/nextjs";
+import { eq } from "drizzle-orm"
+
+// interface UserSubmission {
+//   id: number;
+//   userid: string;
+//   languageId: number;
+//   sourceCode: string;
+//   stdin: string;
+//   outputStatus: unknown;
+//   outputMemory: number;
+//   outputTime: string;
+// }
+
+async function fetchUserSubmissions(userId: string) {
+    const result = await db.select().from(submissions).execute();
+    return result;
+}
+ 
+
+
 
 export default function Example() {
   //const { isLoaded, userId, sessionId, getToken } = useAuth();
@@ -8,6 +34,10 @@ export default function Example() {
   if (!isLoaded || !isSignedIn) {
     return null;
   }
+
+    const result = fetchUserSubmissions(user.id)
+
+    console.log(result)
   
  
   return (
@@ -17,7 +47,7 @@ export default function Example() {
         <h2 className="text-2xl font-medium">User Details</h2>
         {/* Option 1: Use JSON.stringify to convert the user object into a string */}
         <pre className="mt-4 bg-gray-100 p-4 rounded-md overflow-x-auto">
-          {JSON.stringify(resp, null, 2)}
+          {JSON.stringify(result, null, 2)}
         </pre>
         <br></br>
       </div>

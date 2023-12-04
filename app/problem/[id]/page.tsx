@@ -81,27 +81,27 @@ function solve() {
 
   return (
     <>
-      <div className="problem-container p-6 bg-white shadow-lg rounded-lg mx-4 my-6">
+      <div className="problem-container p-6 bg-background shadow-lg rounded-lg mx-4 my-6">
       <h1 className="problem-title text-2xl font-bold mb-4">{problem.Title}</h1>
-      <p className="problem-description text-gray-700 mb-4">{problem.Problem_Description}</p>
-      <p className="test-cases text-gray-600 mb-4">{problem.Test_Cases}</p>
+      <p className="problem-description text-black-700 mb-4">{problem.Problem_Description}</p>
+      <p className="test-cases text-black-600 mb-4">{problem.Test_Cases}</p>
 
       <div className="hints-section mb-4">
           <button 
-            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 1 ? 'bg-blue-500 text-white' : 'bg-background-300 text-gray-500 cursor-not-allowed'}`}
             onClick={() => handleHintClick(1)}
           >
             Hint 1
           </button>
           <button 
-            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 2 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
+            className={`hint-toggle-btn mr-2 px-4 py-2 rounded ${lastUnlockedHint >= 2 ? 'bg-blue-500 text-white' : 'bg-background-300 text-gray-500 cursor-not-allowed'}`} 
             onClick={() => handleHintClick(2)}
             disabled={lastUnlockedHint < 1}
           >
             Hint 2
           </button>
           <button 
-            className={`hint-toggle-btn px-4 py-2 rounded ${lastUnlockedHint >= 3 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`} 
+            className={`hint-toggle-btn px-4 py-2 rounded ${lastUnlockedHint >= 3 ? 'bg-blue-500 text-white' : 'bg-background-300 text-gray-500 cursor-not-allowed'}`} 
             onClick={() => handleHintClick(3)}
             disabled={lastUnlockedHint < 2}
           >
@@ -110,9 +110,9 @@ function solve() {
         </div>
       
       
-        {lastUnlockedHint >= 1 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hints_1}</div>}
-        {lastUnlockedHint >= 2 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
-        {lastUnlockedHint >= 3 && <div className="hint bg-gray-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
+        {lastUnlockedHint >= 1 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hints_1}</div>}
+        {lastUnlockedHint >= 2 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
+        {lastUnlockedHint >= 3 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
 
       <div className="editor-section mb-4">
           <Landing />

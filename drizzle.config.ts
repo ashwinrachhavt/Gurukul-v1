@@ -6,8 +6,9 @@ dotenv.config({
 });
 
 export default {
-    driver: 'pg',
+    driver: 'mysql2',
     schema: './lib/db/schema.ts',
+    out: "./drizzle",
     dbCredentials: {
         connectionString: process.env.DATABASE_URL!,
     },

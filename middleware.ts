@@ -10,6 +10,9 @@ export default authMiddleware({
     "/dashboard",
     "/sign-out",
     "/api(.*)",
+    "problem",
+    "problemstable"
+    
   ],
   async afterAuth(auth, req) {
     if (auth.isPublicRoute) {

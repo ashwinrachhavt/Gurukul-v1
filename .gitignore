@@ -38,3 +38,6 @@ yarn-error.log*
 .env
 .editorconfig
 .vscode
+
+# Sentry Config File
+.sentryclirc

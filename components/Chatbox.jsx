@@ -12,24 +12,35 @@ export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
 
   return (
-    <div style={{ width: '100%', backgroundColor: '#2D3748', padding: '24px', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 10%)', marginBottom: '24px' }}>
-      <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '256px', marginBottom: '16px' }}>
+    <div className="overflow-x-hidden" style={{
+      width: '100%', 
+      backgroundColor: '#2D3748', 
+      padding: '24px', 
+      borderRadius: '8px', 
+      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 10%)', 
+      marginBottom: '24px'
+    }}>
+      <div style={{
+        overflowY: 'auto', 
+        overflowX: 'hidden', 
+        maxHeight: '256px', // Set a max height for vertical scrolling
+        marginBottom: '16px',
+        whiteSpace: 'pre-wrap', // Ensure text wraps and preserves whitespace
+      }}>
         {messages.map(m => (
           <div 
             key={m.id} 
             style={{
-                marginBottom: '8px', 
-                padding: '8px', 
-                borderRadius: '8px', 
-                backgroundColor: m.role === 'user' ? '#2B6CB0' : '#48BB78',
-                // Add these properties to wrap the text
-                whiteSpace: 'pre-wrap', 
-                overflowWrap: 'break-word',
-                wordBreak: 'break-word'
+              marginBottom: '8px', 
+              padding: '8px', 
+              borderRadius: '8px', 
+              backgroundColor: m.role === 'user' ? '#2B6CB0' : '#48BB78',
+              color: 'white', // Consolidate color styling here
+              overflowWrap: 'break-word', // Break long words to prevent horizontal overflow
+              wordBreak: 'break-word'
             }}
           >
-            <span style={{ fontWeight: 'bold', color: 'white' }}>{m.role}:</span> 
-            <span style={{ color: 'white' }}>{m.content}</span>
+            <span style={{ fontWeight: 'bold' }}>{m.role}:</span> {m.content}
           </div>
         ))}
       </div>
