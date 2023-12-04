@@ -1,7 +1,6 @@
 import { currentUser } from "@clerk/nextjs"
 import { auth } from "@clerk/nextjs"
 
-import supabaseClient from '@/lib/supabase-client'
 import { SiteFooter } from "@/components/layout/site-footer"
 import { SiteHeader } from "@/components/layout/site-header"
 

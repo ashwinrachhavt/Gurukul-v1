@@ -11,7 +11,7 @@ export const showSuccessToast = (msg) => {
       progress: undefined,
     });
   };
- export const showErrorToast = (msg?) => {
+ export const showErrorToast = (msg) => {
     toast.error(msg, {
       position: "top-right",
       autoClose: 2000,
