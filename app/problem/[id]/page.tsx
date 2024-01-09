@@ -1,9 +1,10 @@
 // app/problem/[id]/page.tsx
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { useRouter } from 'next/navigation'
 import {UserButton} from "@clerk/nextjs"
 import { currentUser } from '@clerk/nextjs';
+import { initSupabase, fetchProblemById } from '../../../utils/supabaseUtils';
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Sandpack, SandpackProvider, SandpackCodeEditor, SandpackThemeProvider } from "@codesandbox/sandpack-react";
@@ -18,11 +19,16 @@ interface Problem {
   Hints_1: string;
   Hint_2: string;
   Hint_3: string;
+  Tags: string;
+  Difficulty: string;
+  Acceptance: Float32Array;
 }
+
+
 
 const ProblemDetail = () => {
   // const router = useRouter()
-  // const { id } = router.query.id
+  // const { id } = router.query.idTest_Cases
   const pathname = usePathname();
   // Use the as operator to assert the type of id
   const id = pathname.split('/').pop() as string;
@@ -37,28 +43,45 @@ const ProblemDetail = () => {
   const [showHint, setShowHint] = useState<null | number>(null);
   
   const [lastUnlockedHint, setLastUnlockedHint] = useState(0);
-
+  const [loading, setLoading] = useState(true);
   const handleHintClick = (hintNumber: number) => {
     setLastUnlockedHint(Math.max(lastUnlockedHint, hintNumber));
   };
   
-  useEffect(() => {
-    if (id) {
-      setDebugInfo(prev => ({ ...prev, id }));
-      setDebugInfo(prev => ({ ...prev, fetchStatus: 'Fetching problem details...' }));
+  // useEffect(() => {
+  //   if (id) {
+  //     setDebugInfo(prev => ({ ...prev, id }));
+  //     setDebugInfo(prev => ({ ...prev, fetchStatus: 'Fetching problem details...' }));
 
-      fetch(`https://x8ki-letl-twmt.n7.xano.io/api:m3qoN9RM/lcdb/${id}`)
-        .then(response => response.json())
-        .then(data => {
-          // Use type assertion for data
-          setProblem(data as Problem);
-          setDebugInfo(prev => ({ ...prev, fetchedData: data }));
-        })
-        .catch(error => {
-          console.error("Failed to fetch problem:", error);
-          setDebugInfo(prev => ({ ...prev, fetchError: error.message }));
-        });
-    }
+  //     fetch(`https://x8ki-letl-twmt.n7.xano.io/api:m3qoN9RM/lcdb/${id}`)
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         // Use type assertion for data
+  //         setProblem(data as Problem);
+  //         setDebugInfo(prev => ({ ...prev, fetchedData: data }));
+  //       })
+  //       .catch(error => {
+  //         console.error("Failed to fetch problem:", error);
+  //         setDebugInfo(prev => ({ ...prev, fetchError: error.message }));
+  //       });
+  //   }
+  // }, [id]);
+
+  useEffect(() => {
+    const fetchProblem = async () => {
+      const supabase = initSupabase();
+      const tableName = 'LCDB';
+ 
+      try {
+        const data = await fetchProblemById(supabase, tableName, id);
+        setProblem(data[0]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch problem:", error);
+      }
+    };
+ 
+    fetchProblem();
   }, [id]);
 
   if (!problem) {
@@ -85,6 +108,8 @@ function solve() {
       <h1 className="problem-title text-2xl font-bold mb-4">{problem.Title}</h1>
       <p className="problem-description text-black-700 mb-4">{problem.Problem_Description}</p>
       <p className="test-cases text-black-600 mb-4">{problem.Test_Cases}</p>
+      <p className="test-cases text-black-600 mb-4">Tags - {problem.Tags}</p>
+
 
       <div className="hints-section mb-4">
           <button 
@@ -113,9 +138,8 @@ function solve() {
         {lastUnlockedHint >= 1 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hints_1}</div>}
         {lastUnlockedHint >= 2 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
         {lastUnlockedHint >= 3 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
-
       <div className="editor-section mb-4">
-          <Landing />
+      <Landing tags={problem.Tags} difficulty={problem.Difficulty} acceptance={problem.Acceptance} />
       </div>
 
     </div>

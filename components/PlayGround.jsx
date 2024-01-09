@@ -8,6 +8,8 @@ import { languageOptions } from "../constants/languageOptions";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useContext } from 'react';
+import { ProblemContext } from 'app/problem/[id]/page.tsx';
 
 import { defineTheme } from "../lib/defineTheme";
 import useKeyPress from "../hooks/useKeyPress";
@@ -19,6 +21,7 @@ import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguageDropdown";
 import Chatbox from "../components/Chatbox"
 import { useUser } from "@clerk/nextjs";
+import { initSupabase, insertIntoTable } from '../utils/supabaseUtils';
 
 // const { isLoaded, isSignedIn, user } = useUser();
 
@@ -87,7 +90,7 @@ print(binary_search(arr, 10))
 
 
 
-const Landing = () => {
+const Landing = ({ tags, difficulty, acceptance })=> {
   const [code, setCode] = useState(pythonDefault);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
@@ -188,8 +191,7 @@ const Landing = () => {
       
   };
 
-  const handleSubmission = () => {
-
+  const handleSubmission = async () => {
 
 
     // Payload for the submission
@@ -211,20 +213,37 @@ const Landing = () => {
       output_status: outputDetails.status, // Assuming outputDetails has a status property
       output_memory: outputDetails.memory, // Assuming outputDetails has a memory property
       output_time: outputDetails.time,
+      tags,
+      difficulty,
+      acceptance
       // stdout: btoa(stdout),
       
     };
+
+    const supabase = initSupabase();
+    const tableName = 'submissions';
+
+    try {
+      const { data, error } = await insertIntoTable(supabase, tableName, submissionPayload);
+      if (error) throw error;
+      console.log('Inserted submission:', data);
+    } catch (error) {
+      console.error("Failed to insert submission:", error);
+    }
+
+    // console.log(submissionPayload)
+
   
-    // Making an API call to /api/submission
-    axios.post('/api/submit', submissionPayload)
-      .then(response => {
-        console.log("Submission Response:", response.data);
-        // Handle the response here (e.g., update the UI, show a success message, etc.)
-      })
-      .catch(error => {
-        console.error("Submission Error:", error);
-        // Handle errors here (e.g., show an error message to the user)
-      });
+    // // Making an API call to /api/submission
+    // axios.post('/api/submit', submissionPayload)
+    //   .then(response => {
+    //     console.log("Submission Response:", response.data);
+    //     // Handle the response here (e.g., update the UI, show a success message, etc.)
+    //   })
+    //   .catch(error => {
+    //     console.error("Submission Error:", error);
+    //     // Handle errors here (e.g., show an error message to the user)
+    //   });
   };
 
   const checkStatus = async (token) => {
@@ -345,7 +364,7 @@ const Landing = () => {
           />
         </div>
 
-        <div className="right-container flex flex-shrink-0 w-[30%] flex-col">
+        <div className="right-container flex flex-grow-1 w-[50%] flex-col">
           <OutputWindow outputDetails={outputDetails} />
           <div className="flex flex-col items-end">
 

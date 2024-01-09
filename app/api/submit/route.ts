@@ -37,11 +37,10 @@ export async function POST(request: Request) {
  
   // Send the POST request to the Xano backend
   const response = await axios.post('https://x8ki-letl-twmt.n7.xano.io/api:VB5qx6PF/samplesubmissions', body);
-
   // Handle the response from the Xano backend
   if (response.status === 200) {
     // The request was successful
-    console.log(response.data);
+    // console.log(response.data);
     return NextResponse.json(response.data);
   } else {
     // The request failed

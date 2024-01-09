@@ -40,7 +40,7 @@ const OutputWindow = ({ outputDetails }) => {
       <h1 className="text-3xl font-bold">Output</h1>
       <div 
         style={{
-          width: '100%',
+          width: '700px',
           height: '110px',
           backgroundColor: '#2D3748', // This is the hexadecimal code for dark blue
           color: 'white',

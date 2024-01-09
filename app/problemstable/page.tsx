@@ -2,6 +2,7 @@
 "use client";
 import Link from 'next/link';
 import React, { useState, useEffect, FC } from 'react';
+import { initSupabase, fetchProblems } from '../../utils/supabaseUtils';
 
 interface Problem {
   id: string;
@@ -16,18 +17,20 @@ const ProblemsTable: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchProblems = async () => {
+    const supabase = initSupabase();
+    const tableName = 'LCDB';
+ 
+    const fetchProblemsFromSupabase = async () => {
       try {
-        const response = await fetch('https://x8ki-letl-twmt.n7.xano.io/api:m3qoN9RM/lcdb');
-        const data: Problem[] = await response.json();
+        const data = await fetchProblems(supabase, tableName);
         setProblems(data);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch problems:", error);
       }
     };
-
-    fetchProblems();
+ 
+    fetchProblemsFromSupabase();
   }, []);
 
   if (loading) return <p>Loading...</p>;
