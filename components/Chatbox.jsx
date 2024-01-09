@@ -2,26 +2,12 @@
 
 import { useChat } from 'ai/react';
 import axios from 'axios';
-import { useUser } from "@clerk/nextjs";
 
 export default function Chat() {
     
- const { isLoaded, isSignedIn, user } = useUser();
-
- // If the user data is not loaded yet, render nothing
- if (!isLoaded) {
-   return null;
- }
 
  const fetcher = (messages) => {
-
-  const messagesWithUserId = messages.map((message) => ({
-    message: message,
-    userId: user,
-  }));
-
-
-   return axios.post('/app/api/chat', { messages: messagesWithUserId, userId : user });
+   return axios.post('/app/api/chat', { messages });
  };
 
  const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
