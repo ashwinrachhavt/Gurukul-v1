@@ -5,7 +5,7 @@ const CodeEditor = ({ onChange, language, code, theme,action }) => {
 
   const handleEditorChange = (value) => {
     setValue(value);
-    onChange(action, value);
+    onChange("code", value);
   };
 
   return (

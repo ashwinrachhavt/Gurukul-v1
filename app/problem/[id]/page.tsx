@@ -139,7 +139,7 @@ function solve() {
         {lastUnlockedHint >= 2 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_2}</div>}
         {lastUnlockedHint >= 3 && <div className="hint bg-background-100 p-4 rounded mb-4">{problem.Hint_3}</div>}
       <div className="editor-section mb-4">
-      <Landing tags={problem.Tags} difficulty={problem.Difficulty} acceptance={problem.Acceptance} />
+      <Landing tags={problem.Tags} difficulty={problem.Difficulty} acceptance={problem.Acceptance} id = {problem.id} />
       </div>
 
     </div>

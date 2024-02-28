@@ -23,3 +23,9 @@ export const insertIntoTable = async (supabase, tableName, data) => {
     if (error) throw error;
     return result;
 };
+
+export const fetchTestCasesById = async (supabase, tableName, id) => {
+    const { data, error } = await supabase.from(tableName).select('*').eq('id', id);
+    if (error) throw error;
+    return data;
+   };

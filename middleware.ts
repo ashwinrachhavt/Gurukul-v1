@@ -11,7 +11,7 @@ export default authMiddleware({
     "/sign-out",
     "/api(.*)",
     "problem",
-    "problemstable"
+    "/problemstable"
     
   ],
   async afterAuth(auth, req) {

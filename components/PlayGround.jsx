@@ -5,93 +5,22 @@ import CodeEditorWindow from "./CodeEditor";
 import axios from "axios";
 import { classnames } from "../utils/general";
 import { languageOptions } from "../constants/languageOptions";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useContext } from 'react';
-import { ProblemContext } from 'app/problem/[id]/page.tsx';
-
 import { defineTheme } from "../lib/defineTheme";
 import useKeyPress from "../hooks/useKeyPress";
-import Footer from "./Footer";
 import OutputWindow from "./OutputWindow";
-import CustomInput from "./CustomInput";
 import OutputDetails from "./OutputDetails";
 import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguageDropdown";
 import Chatbox from "../components/Chatbox"
 import { useUser } from "@clerk/nextjs";
-import { initSupabase, insertIntoTable } from '../utils/supabaseUtils';
-
-// const { isLoaded, isSignedIn, user } = useUser();
-
-
-const javascriptDefault = `/**
-* Problem: Binary Search: Search a sorted array for a target value.
-*/
-
-// Time: O(log n)
-const binarySearch = (arr, target) => {
- return binarySearchHelper(arr, target, 0, arr.length - 1);
-};
-
-const binarySearchHelper = (arr, target, start, end) => {
- if (start > end) {
-   return false;
- }
- let mid = Math.floor((start + end) / 2);
- if (arr[mid] === target) {
-   return mid;
- }
- if (arr[mid] < target) {
-   return binarySearchHelper(arr, target, mid + 1, end);
- }
- if (arr[mid] > target) {
-   return binarySearchHelper(arr, target, start, mid - 1);
- }
-};
-
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-console.log(binarySearch(arr, target));
-`;
+import { initSupabase, insertIntoTable, fetchTestCasesById } from '../utils/supabaseUtils';
+import { PythonDefault, pythonDefault } from "../utils/utilities";
 
 
-const pythonDefault = `
-# Problem: Binary Search: Search a sorted array for a target value.
-
-# Time: O(log n)
-def binary_search(arr, target):
-    return binary_search_helper(arr, target, 0, len(arr) - 1)
-
-def binary_search_helper(arr, target, start, end):
-    if start > end:
-        return True
-    mid = (start + end) // 2
-    if arr[mid] == target:
-        return mid
-    if arr[mid] < target:
-        return binary_search_helper(arr, target, mid + 1, end)
-    if arr[mid] > target:
-        return binary_search_helper(arr, target, start, mid - 1)
-    
-    return True
-
-arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-target = 5
-result = binary_search(arr, target)
-print(result)
-print(binary_search(arr, 4))
-print(binary_search(arr, 3))
-print(binary_search(arr, 11))
-print(binary_search(arr, 10))
-
-`
-
-
-
-const Landing = ({ tags, difficulty, acceptance })=> {
-  const [code, setCode] = useState(pythonDefault);
+const Landing = ({ tags, difficulty, acceptance, id  })=> {
+  const [code, setCode] = useState(null);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
@@ -101,10 +30,8 @@ const Landing = ({ tags, difficulty, acceptance })=> {
   const [testResults, setTestResults] = useState(null);
   const enterPress = useKeyPress("Enter");
   const ctrlPress = useKeyPress("Control");
-
+  const [submissionData, setSubmissionData] = useState(null);
   const { isLoaded, isSignedIn, user } = useUser();
-
-  const expectedOutputs = ['4', '3', '2', 'False', '9'];
 
 
   const onSelectChange = (sl) => {
@@ -119,9 +46,10 @@ const Landing = ({ tags, difficulty, acceptance })=> {
       handleCompile();
     }
   }, [ctrlPress, enterPress]);
+
   const onChange = (action, data) => {
     switch (action) {
-      case "code": {print(base64.decode("aGVsbG8sIHdvcmxkCg==\n"))
+      case "code": {
         setCode(data);
         break;
       }
@@ -135,116 +63,198 @@ const Landing = ({ tags, difficulty, acceptance })=> {
     return Buffer.from(encodedStr, 'base64').toString('ascii');
   };
 
-  const compareOutputs = (actualBase64Stdout) => {
-    const decodedStdout = decodeBase64(actualBase64Stdout);
-    const actualOutputs = decodedStdout.trim().split('\n');
-    let successfulTests = 0;
-    let passedTestCases = [];
-
-    for (let i = 0; i < actualOutputs.length; i++) {
-      if (actualOutputs[i] === expectedOutputs[i]) {
-        successfulTests++;
-        passedTestCases.push(i + 1); // Assuming test cases are numbered starting from 1
-      }
-    }
-
-    return {
-      successfulTests,
-      totalTests: expectedOutputs.length,
-      passedTestCases
-    };
-  };
-  
-  const handleCompile = () => {
-    setProcessing(true);
-    const formData = {
-      language_id: language.id,
-      source_code: btoa(code),
-      stdin: btoa(customInput),
-    };
+  const handleSubmit = async () => {
+    setCode(code);
+    const codeToRun = code;
+    const input = "";
     const options = {
-      method: "POST",
-      url: process.env.NEXT_PUBLIC_RAPID_API_URL,
-      params: { base64_encoded: "true", fields: "*" },
-      headers: {
-        "content-type": "application/json",
-        "Content-Type": "application/json",
-        "X-RapidAPI-Host": process.env.NEXT_PUBLIC_RAPID_API_HOST,
-        "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPID_API_KEY,
+      method : 'POST',
+      url : process.env.NEXT_PUBLIC_ONECOMPILER_URL,
+      headers : {
+        'content-type' : 'application/json', 
+        'X-RapidAPI-Key' : process.env.NEXT_PUBLIC_ONECOMPILER_KEY,
+        'X-RapidAPI-Host' : process.env.NEXT_PUBLIC_ONECOMPILER_HOST,
       },
-      data: formData,
-    };
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log("response data:", response.data);
-        setStdout(response.data.stdout);
-        const token = response.data.token;
-        checkStatus(token);
-      })
-      .catch((err) => {
-        let error = err.response ? err.response.data : err;
-        setProcessing(false);
-        console.log(error);
-      });
-
-      
-  };
-
-  const handleSubmission = async () => {
-
-
-    // Payload for the submission
-    if (!outputDetails) {
-      console.error("No Output Details available to submit")
-      return;
-    }
-
-    const testResult = compareOutputs(stdout);
-    setTestResults(testResult);
-
-    console.log(testResult)
-
-    const submissionPayload = {
-      userid : user.id,
-      language_id: language.id,
-      source_code: code,
-      stdin: btoa(customInput),
-      output_status: outputDetails.status, // Assuming outputDetails has a status property
-      output_memory: outputDetails.memory, // Assuming outputDetails has a memory property
-      output_time: outputDetails.time,
-      tags,
-      difficulty,
-      acceptance
-      // stdout: btoa(stdout),
-      
+      data : {
+        language : language.value, 
+        stdin : input,
+        files : [
+          {
+            name : 'index.py',
+            content : codeToRun
+          }
+        ]
+      }
     };
 
     const supabase = initSupabase();
-    const tableName = 'submissions';
+    const tableName = 'LCDB';
 
-    try {
-      const { data, error } = await insertIntoTable(supabase, tableName, submissionPayload);
-      if (error) throw error;
-      console.log('Inserted submission:', data);
-    } catch (error) {
-      console.error("Failed to insert submission:", error);
+    let actualOutput = ''; // Declare actualOutput here
+
+  try {
+    const response = await axios.request(options);
+    console.log(response);
+    handleCompileResult(response.data);
+    const submissionData = {
+      clerk_user_id : user.id,
+      submission_code: code,
+      language: language.value,
+      stdin: response.data.stdin,
+      status: response.data.status,
+      execution_time: response.data.executionTime,
+      tags: tags,
+      difficult: difficulty,
+      acceptance: acceptance,
+      submissionId: id, 
     }
+    setSubmissionData(submissionData);
 
-    // console.log(submissionPayload)
+    actualOutput = response.data.stdout; // Assign value to actualOutput here
+  } catch (error) {
+    console.error("Error running code:", error);
+    return;
+  }
+
+  try {
+    const expectedOutputData = await fetchTestCasesById(supabase, tableName, parseInt(id));
+    const expectedOutputs = expectedOutputData[0].Actual_Output; // Adjust according to your data structure
+    const testResults = compareTestCases(actualOutput, expectedOutputs);
+    //console.log(actualOutput);
+    //console.log(expectedOutputs);
+    //console.log(testResults);
+    setTestResults(testResults);
+    
+  } catch (error) {
+    console.error("Failed to fetch expected outputs:", error);
+  }
+
+  }
+
+  const handleCompileResult = (result) => {
+    // Check for successful compilation without errors
+    if (result.status === "success" && !result.exception && result.stderr === null) {
+      // Display a success toast with the output and execution time
+      toast.success(`Compiled Successfully!\nOutput: ${result.stdout}\nExecution Time: ${result.executionTime}ms`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } else if (result.status === "success" && (result.exception || result.stderr !== null)) {
+      // Display an error toast with the error message
+      toast.error(`Compilation Error:\n${result.exception || result.stderr}`, {
+        position: "top-right",
+        autoClose: false, // Keep the toast until closed manually for error messages
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } else {
+      // Handle other statuses or unexpected results
+      toast.info("Unexpected result from compilation.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
 
   
-    // // Making an API call to /api/submission
-    // axios.post('/api/submit', submissionPayload)
-    //   .then(response => {
-    //     console.log("Submission Response:", response.data);
-    //     // Handle the response here (e.g., update the UI, show a success message, etc.)
-    //   })
-    //   .catch(error => {
-    //     console.error("Submission Error:", error);
-    //     // Handle errors here (e.g., show an error message to the user)
-    //   });
+  const handleSubmissionAndTestCases = async (submissionData, testCasesData) => {
+    const supabase = initSupabase();
+  
+    // Store submission
+    const submissionResponse = await supabase
+      .from('submissionstable')
+      .insert([{
+        clerk_user_id: submissionData.clerk_user_id,
+        submission_code: submissionData.submission_code,
+        language: submissionData.language,
+        stdin: submissionData.stdin,
+        status: submissionData.status,
+        execution_time: submissionData.execution_time,
+        submissionId : id,
+        tags: JSON.stringify(submissionData.tags), // Assuming tags is an array or object
+        difficulty: submissionData.difficulty,
+        acceptance: submissionData.acceptance,
+        passed_tests: testCasesData.passedTests,
+        total_tests: testCasesData.totalTests,
+        failed_indices: JSON.stringify(testResults?.failedTestIndices.slice(0, -1)),
+         // Assuming an array
+      }]);
+  
+    if (submissionResponse.error) {
+      console.error('Error storing submission:', submissionResponse.error);
+      return;
+    }
+  
+   
   };
+
+  
+  const handleSaveAndSubmit = async () => {
+    await handleSubmissionAndTestCases(submissionData, testResults);
+  };
+
+
+  function compareTestCases(actual, expected) {
+    // Function to safely parse JSON strings
+    function safeParseJSON(jsonString) {
+      try {
+        return JSON.parse(jsonString);
+      } catch (e) {
+        return jsonString; // Return the original string if parsing fails
+      }
+    }
+  
+    // Helper function to deep compare two entities
+    function deepEqual(a, b) {
+      if (typeof a !== typeof b) return false;
+      if (typeof a !== 'object' || a === null || b === null) return a === b;
+  
+      const keysA = Object.keys(a), keysB = Object.keys(b);
+      if (keysA.length !== keysB.length) return false;
+  
+      for (const key of keysA) {
+        if (!keysB.includes(key)) return false;
+        if (!deepEqual(a[key], b[key])) return false;
+      }
+  
+      return true;
+    }
+  
+    // Parse and compare each test case
+    const parsedActual = actual.split('\n').map(safeParseJSON);
+    const parsedExpected = expected.split('\n').map(safeParseJSON);
+  
+    let passedTests = 0;
+    const failedTestCases = [];
+
+    parsedActual.forEach((actualValue, index) => {
+      if (index < parsedExpected.length && deepEqual(actualValue, parsedExpected[index])) {
+        passedTests++;
+      } else {
+        failedTestCases.push(index + 1);
+      }
+    });
+  
+    return {
+      passedTests,
+      totalTests: parsedExpected.length,
+      successRate: `${(passedTests / parsedExpected.length * 100).toFixed(2)}%`,
+      failedTestIndices: failedTestCases,
+    };
+  }
+  
+
+
 
   const checkStatus = async (token) => {
     const options = {
@@ -288,6 +298,8 @@ const Landing = ({ tags, difficulty, acceptance })=> {
       showErrorToast("Something went wrong! Please try again later.");
     }
   };
+
+
   function handleThemeChange(th) {
     const theme = th;
     console.log("theme...", theme);
@@ -369,7 +381,7 @@ const Landing = ({ tags, difficulty, acceptance })=> {
           <div className="flex flex-col items-end">
 
           <button
-            onClick={handleCompile}
+            onClick={handleSubmit}
             disabled={!code}
             className={classnames(
               "mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-background flex-shrink-0",
@@ -380,28 +392,40 @@ const Landing = ({ tags, difficulty, acceptance })=> {
           </button>
           <div className="flex flex-col items-end mb-4 p-5">
       <button
-        onClick={handleSubmission}
+        onClick={handleSaveAndSubmit}
         className="mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-background flex-shrink-0"
           >
             Save and Submit
           </button>
           <br></br>
-          <Chatbox /> 
+          <Chatbox userId={user?.id} />
+
 
         </div>
           </div>
           {outputDetails && <OutputDetails outputDetails={outputDetails} />}
 
           {testResults && (
-          <div>
-            <h3>Test Results:</h3>
-            <p>Successful Tests: {testResults.successfulTests}/{testResults.totalTests}</p>
-            <p>Passed Test Cases: {testResults.passedTestCases.join(', ')}</p>
-          </div>
-        )}
+          <div className="mt-4">
+          <h3>Test Results:</h3>
+          {testResults.passedTests > 0 ? (
+            <>
+              <p>Success Rate: {testResults.successRate}</p>
+              <p>Passed Test Cases: {testResults.passedTestCases}</p>
+              <p>Failed Test Cases: {testResults.failedTestIndices.slice(0, -1).join(", ")}</p>
+            </>
+          ) : (
+            <div className="text-red-500">
+              <p>None of the test cases passed. Please review your code!</p>
+            </div>
+          )}
+        </div>
+      )}
         </div>
       </div>
     </>
   );
 };
+
+
 export default Landing;
