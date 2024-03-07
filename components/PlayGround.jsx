@@ -17,6 +17,7 @@ import Chatbox from "../components/Chatbox"
 import { useUser } from "@clerk/nextjs";
 import { initSupabase, insertIntoTable, fetchTestCasesById } from '../utils/supabaseUtils';
 import { PythonDefault, pythonDefault } from "../utils/utilities";
+import TestCasesPopup from './TestCasesPopup'; // Adjust the path as necessary
 
 
 const Landing = ({ tags, difficulty, acceptance, id  })=> {
@@ -363,7 +364,9 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         <div className="px-4 py-2">
           <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
         </div>
+        
       </div>
+
       {/* <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow-x-hidden overflow-y-auto"> */}
       <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow--hidden">
 
@@ -376,7 +379,12 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
           />
         </div>
 
+
+
         <div className="right-container flex flex-grow-1 w-[50%] flex-col">
+        <TestCasesPopup problemId={id} /> {/* Add this line where you want the popup to appear, assuming 'id' is the problem ID */}
+        <div style={{ height: '50px' }}></div> {/* Adjust height as needed */}
+
           <OutputWindow outputDetails={outputDetails} />
           <div className="flex flex-col items-end">
 

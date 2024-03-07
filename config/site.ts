@@ -14,7 +14,7 @@ export const siteConfig = {
   ],
   links: {
     linkedin: "https://www.linkedin.com/in/ashwinrachha/",
-    github: "https://github.com/AshwinRachha",
+    github: "mailto:ashwinr@vt.edu",
     docs: "https://chef-genie.app",
   },
 }

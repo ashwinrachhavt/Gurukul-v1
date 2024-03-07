@@ -14,14 +14,14 @@ export function SiteFooter() {
           >
             Ashwin Rachha
           </a>
-          . The source code is available on{" "}
+          . If Any Questions, Please reach out at {" "}
           <a
             href={siteConfig.links.github}
             target="_blank"
             rel="noreferrer"
             className="font-medium underline underline-offset-4"
           >
-            GitHub
+            Email
           </a>
           .
         </p>
