@@ -29,3 +29,20 @@ export const fetchTestCasesById = async (supabase, tableName, id) => {
     if (error) throw error;
     return data;
    };
+
+export const insertChatInteraction = async (supabase, userId, user_input, ai_output) => {
+
+  
+    if (!user_input || !ai_output) {
+      throw new Error('Invalid message format');
+    }
+  
+    const payload = {
+      role: userId, // Assuming this is how you're mapping userId to role
+      prompt: user_input,
+      response: ai_output,
+      timestamp: Date.now()
+    };
+  
+    return await insertIntoTable(supabase, 'messages', payload);
+  };

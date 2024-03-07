@@ -1,16 +1,40 @@
 'use client';
-
+import React, { useState, useEffect } from 'react';
 import { useChat } from 'ai/react';
 import axios from 'axios';
+import { useUser } from "@clerk/nextjs";
+import { initSupabase, insertChatInteraction } from '@/utils/supabaseUtils';
 
-export default function Chat() {
+export default function Chat({ userId }) {
+
+  const [message, setMessage] = useState("");
     
 
- const fetcher = (messages) => {
-   return axios.post('/app/api/chat', { messages });
+ const fetcher = async (messages) => {
+   const response = axios.post('/app/api/chat', { messages });
+   const data = response.data; 
+  setMessage(data); 
+  return data;
  };
 
- const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
+ 
+
+ const supabase = initSupabase();
+
+ const { messages, input, handleInputChange, handleSubmit, data } = useChat(fetcher);
+
+ const handleFormSubmit = async (event) => {
+  //event.preventDefault(); 
+
+  handleSubmit(event);
+  try {
+    console.log("userId", userId);
+    console.log(message);
+    await insertChatInteraction(supabase, userId, input, "AI");
+  } catch (error) {
+    console.error("Failed to insert chat interaction:", error);
+  }
+};
 
  return (
    <div className="overflow-x-hidden" style={{
@@ -46,7 +70,7 @@ export default function Chat() {
        ))}
      </div>
 
-     <form onSubmit={handleSubmit} style={{ marginTop: '16px' }}>
+     <form onSubmit={handleFormSubmit} style={{ marginTop: '16px' }}>
        <input 
          value={input} 
          placeholder="Say something..."
