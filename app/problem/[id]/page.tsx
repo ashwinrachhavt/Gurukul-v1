@@ -13,6 +13,7 @@ import Landing from "../../../components/PlayGround";
 
 // Define an interface for the problem data
 interface Problem {
+  id: number;
   Title: string;
   Problem_Description: string;
   Test_Cases: string;
