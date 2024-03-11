@@ -1,6 +1,9 @@
 import OpenAI from 'openai';
 import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs";
+
+import { initSupabase, insertChatInteraction } from '@/utils/supabaseUtils';
 
 // Get the clerk User Id
 const openai = new OpenAI({
@@ -9,7 +12,7 @@ const openai = new OpenAI({
 
 export const runtime = 'edge';
 export async function POST(req) {
-  
+  const { userId } = auth();
 
   const { messages} = await req.json();
   // Add the system message as the first element of the messages array
@@ -24,6 +27,10 @@ export async function POST(req) {
     stream: true,
     messages,
   });
+
+
+
   const stream = OpenAIStream(response);
+
   return new StreamingTextResponse(stream);
 }

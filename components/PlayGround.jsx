@@ -44,7 +44,7 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
     if (enterPress && ctrlPress) {
       console.log("enterPress", enterPress);
       console.log("ctrlPress", ctrlPress);
-      handleCompile();
+      handleSubmit();
     }
   }, [ctrlPress, enterPress]);
 

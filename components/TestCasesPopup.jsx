@@ -56,7 +56,10 @@ const TestCasesPopup = ({ problemId }) => {
         style={styles.button}
         className="toggle-popup-btn"
       >
+          {isOpen ? 'Hide Test Cases' : 'Show Test Cases'}
+
       </button>
+
       {isOpen && (
         <div className="test-cases-content" style={styles.content}>
           <h3>Use Print Statements in Your Language to Run these Test Cases</h3>

@@ -7,11 +7,12 @@ interface ProblemLayoutProps {
   children: React.ReactNode
 }
 
+
+
 export default async function ProblemsTableLayout({
   children,
 }: ProblemLayoutProps) {
-  const user = await currentUser()
-
+  const user = await currentUser();
   return (
     <div className="relative flex min-h-screen flex-col">
       <SiteHeader user = {user} />

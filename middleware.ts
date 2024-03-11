@@ -10,7 +10,7 @@ export default authMiddleware({
     "/dashboard",
     "/sign-out",
     "/api(.*)",
-    "problem",
+    "/problem",
     "/problemstable"
     
   ],
@@ -28,9 +28,12 @@ export default authMiddleware({
       url.pathname = "/sign-in"
       return NextResponse.redirect(url)
     }
+
+    
   },
 })
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+
 }
