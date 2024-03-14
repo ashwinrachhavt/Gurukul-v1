@@ -2,15 +2,23 @@
 
 import { useChat } from 'ai/react';
 import axios from 'axios';
+import { useUser } from "@clerk/nextjs";
 
-export default function Chat() {
-    
-
-  const fetcher = (messages) => {
-    return axios.post('/app/api/chat', { messages });
-  };
- 
-  const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
+export default function Chat({ userId }) {
+  
+  // const fetcher = (messages) => {
+  //   return axios.post('/app/api/chat', { messages});
+  // };
+  
+  //const { messages, input, handleInputChange, handleSubmit } = useChat(fetcher);
+  
+  const { input, handleInputChange, handleSubmit, messages } = useChat({
+    api: "/api/chat",
+    body: {
+      userId,
+    },
+    initialMessages: [],
+  });
  
  return (
    <div className="overflow-x-hidden" style={{
