@@ -56,14 +56,13 @@ const TestCasesPopup = ({ problemId }) => {
         style={styles.button}
         className="toggle-popup-btn"
       >
-          {isOpen ? 'Hide Test Cases' : 'Show Test Cases'}
-
+        {isOpen ? 'Hide Test Cases' : 'Show Test Cases'}
       </button>
 
       {isOpen && (
-        <div className="test-cases-content" style={styles.content}>
-          <h3>Use Print Statements in Your Language to Run these Test Cases</h3>
-          <ul>
+        <div className="test-cases-content bg-background p-5 rounded-lg shadow-lg">
+          <h3 className="text-foreground mb-4">Use Print Statements in Your Language to Run these Test Cases</h3>
+          <ul className="text-foreground">
             {testCaseArray.map((testCase, index) => (
               <li key={index}>{testCase}</li> // Mapping over the array of test cases
             ))}

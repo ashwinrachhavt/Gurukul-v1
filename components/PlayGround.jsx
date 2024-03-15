@@ -355,7 +355,6 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
       />
 
 
-
       <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 overflow-hidden"></div>
       <div className="flex flex-row overflow-y-hidden">
         <div className="px-4 py-2">
@@ -367,8 +366,8 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         
       </div>
 
-      {/* <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow-x-hidden overflow-y-auto"> */}
-      <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow--hidden">
+      <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow-x-hidden overflow-y-auto">
+      {/* <div className="flex flex-row space-x-4 items-start px-4 py-4 overflow--hidden"> */}
 
         <div className="flex flex-col w-full h-full justify-start items-end">
           <CodeEditorWindow
