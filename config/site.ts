@@ -5,10 +5,10 @@ export const siteConfig = {
   url: "",
   ogImage: "../public/images/gem.png",
   description:
-    "An open source recipe generator powered by OpenAi and ChatGPT.",
+    "An AI powered Code Mentor aimed to help you critically think.",
   mainNav: [
     {
-      title: "Chef Genie Homepage",
+      title: "Gurukul",
       href: "/",
     },
   ],
