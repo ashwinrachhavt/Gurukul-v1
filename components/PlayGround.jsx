@@ -34,7 +34,6 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
   const [submissionData, setSubmissionData] = useState(null);
   const { isLoaded, isSignedIn, user } = useUser();
 
-
   const onSelectChange = (sl) => {
     console.log("selected Option...", sl);
     setLanguage(sl);
@@ -81,7 +80,7 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         stdin : input,
         files : [
           {
-            name : 'index.py',
+            name : 'index',
             content : codeToRun
           }
         ]
@@ -384,7 +383,7 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         <TestCasesPopup problemId={id} /> {/* Add this line where you want the popup to appear, assuming 'id' is the problem ID */}
         <div style={{ height: '50px' }}></div> {/* Adjust height as needed */}
 
-          <OutputWindow outputDetails={outputDetails} />
+          <OutputWindow outputDetails={outputDetails} testResults={testResults} />
           <div className="flex flex-col items-end">
 
           <button

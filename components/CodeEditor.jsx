@@ -19,7 +19,7 @@ const CodeEditor = ({ onChange, language, code, theme,action }) => {
         language={language || "javascript"}
         value={value}
         theme={theme}
-        defaultValue="// Write your code here"
+        defaultValue=""
         onChange={handleEditorChange}
       />
     </div>

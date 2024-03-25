@@ -5,7 +5,7 @@ import { MendableInPlace } from "@mendable/search"
 const MyMendableSearchBar = () => {
 
   const mendableStyles = {
-    width: '1200px', // adjust as needed
+    width: '1600px', // adjust as needed
     height: '800px', // adjust as needed
   };
 
@@ -22,7 +22,8 @@ const MyMendableSearchBar = () => {
       <div style={mendableStyles}>
         <MendableInPlace anon_key={process.env.NEXT_PUBLIC_MENDABLE_ANON_KEY} 
           darkMode={true} 
-          accentColor="#123456" 
+          accentColor="#123456"
+          messageSettings={{ openSourcesInNewTab: true }} 
         />
       </div>
     </div>

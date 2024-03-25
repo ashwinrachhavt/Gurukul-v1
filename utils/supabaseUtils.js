@@ -1,4 +1,3 @@
-// utils/supabaseUtils.js
 import { createClient } from '@supabase/supabase-js';
 // import { cookies } from 'next/headers';
 
@@ -23,7 +22,6 @@ export const insertIntoTable = async (supabase, tableName, data) => {
     if (error) throw error;
     return result;
 };
-
 export const fetchTestCasesById = async (supabase, tableName, id) => {
     const { data, error } = await supabase.from(tableName).select('*').eq('id', id);
     if (error) throw error;
@@ -32,13 +30,9 @@ export const fetchTestCasesById = async (supabase, tableName, id) => {
 
 export const insertChatInteraction = async (supabase, userId, user_input, ai_output) => {
 
-  
-    if (!user_input || !ai_output) {
-      throw new Error('Invalid message format');
-    }
-  
+    
     const payload = {
-      role: userId, // Assuming this is how you're mapping userId to role
+      role: userId, 
       prompt: user_input,
       response: ai_output,
       timestamp: Date.now()
