@@ -51,7 +51,9 @@ export default function Chat({ userId }) {
             }}
           >
             <span style={{ fontWeight: 'bold' }}>{m.role}:</span>
-            <ReactMarkdown remarkPlugins={[remarkGfm]} children={m.content} />
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {m.content}
+          </ReactMarkdown>
           </div>
         ))}
       </div>
