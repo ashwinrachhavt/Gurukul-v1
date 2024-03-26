@@ -8,8 +8,8 @@ const MyFormPage = () => {
       <iframe
         src="https://tally.so/r/3NoYZB"
         frameBorder="0"
-        width="1200"
-        height="1200"
+        width="100%"
+        height="100%"
         allowFullScreen
       ></iframe>
     </div>

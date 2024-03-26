@@ -211,10 +211,9 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
 
   
   const handleSubmissionAndTestCases = async (submissionData, testCasesData) => {
-    
-  
-    // Store submission
-    const submissionResponse = await supabase
+    try {
+
+      const submissionResponse = await supabase
       .from('submissionstable')
       .insert([{
         clerk_user_id: submissionData.clerk_user_id,
@@ -232,18 +231,37 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         failed_indices: JSON.stringify(testResults?.failedTestIndices.slice(0, -1)),
          // Assuming an array
       }]);
-  
-    if (submissionResponse.error) {
-      console.error('Error storing submission:', submissionResponse.error);
-      return;
+
+      if (submissionResponse.error) {
+        console.error('Error storing submission:', submissionResponse.error);
+        return { success: false, message: 'Error storing submission.' };
+      }
+
+      return { success: true, message: 'Successfully submitted to DB.' };
+    } catch (error) {
+      console.error('Submission error', error);
+      return {success : false, message : 'Submission failed due to an error'};
     }
+    
   
+    
    
   };
 
   
   const handleSaveAndSubmit = async () => {
     await handleSubmissionAndTestCases(submissionData, testResults);
+
+    toast.success("Successfully submitted to DB", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+
   };
 
 
