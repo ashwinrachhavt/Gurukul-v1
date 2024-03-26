@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { UserProfile } from "@/components/user-profile"
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chef-genie.app"),
+  metadataBase: new URL("https://gurukulvt.vercel.app/"),
   title: "Account",
   description: "Manage your account settings",
 }
