@@ -15,7 +15,7 @@ import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguageDropdown";
 import Chatbox from "../components/Chatbox"
 import { useUser } from "@clerk/nextjs";
-import { initSupabase, insertIntoTable, fetchTestCasesById } from '../utils/supabaseUtils';
+import { initSupabase, insertIntoTable, fetchTestCasesById, fetchStarterCode } from '../utils/supabaseUtils';
 import { PythonDefault, pythonDefault } from "../utils/utilities";
 import TestCasesPopup from './TestCasesPopup'; // Adjust the path as necessary
 
@@ -33,10 +33,29 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
   const ctrlPress = useKeyPress("Control");
   const [submissionData, setSubmissionData] = useState(null);
   const { isLoaded, isSignedIn, user } = useUser();
+  const supabase = initSupabase();
 
-  const onSelectChange = (sl) => {
+  const fileNameMapping = {
+    python: 'Main.py',
+    java: 'Main.java',
+    go: 'Main.go',
+    'c++': 'Main.cpp', // Make sure the key matches the value for C++ in languageOptions
+    c: 'Main.c',
+    javascript: 'Main.js',
+  };
+  
+
+  const onSelectChange = async (sl) => {
     console.log("selected Option...", sl);
     setLanguage(sl);
+    const { starterCode, error } = await fetchStarterCode(supabase, sl.value,  parseInt(id));
+    if (error) {
+      toast.error("Failed to fetch starter code");
+      return;
+    }
+  
+    setCode(starterCode);
+
   };
 
   useEffect(() => {
@@ -46,6 +65,29 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
       handleSubmit();
     }
   }, [ctrlPress, enterPress]);
+
+  useEffect(() => {
+    const fetchDefaultStarterCode = async () => {
+      // This assumes `language` has already been set to Python as shown above
+      if (!language) {
+        console.error('Default language not set');
+        return;
+      }
+  
+      // Ensure `id` is correctly initialized and relevant for fetching starter code
+      const { starterCode, error } = await fetchStarterCode(supabase, language.value, parseInt(id));
+      if (error) {
+        toast.error("Failed to fetch starter code for the default language");
+        return;
+      }
+  
+      setCode(starterCode);
+    };
+  
+    fetchDefaultStarterCode();
+    // If `id` is dynamic, include it in the dependency array
+  }, [id]); // If `id` is static or not used, you can remove it from the dependency array
+  
 
   const onChange = (action, data) => {
     switch (action) {
@@ -67,6 +109,8 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
     setCode(code);
     const codeToRun = code;
     const input = "";
+    const fileName = fileNameMapping[language.value] || 'Main.txt';
+
     const options = {
       method : 'POST',
       url : process.env.NEXT_PUBLIC_ONECOMPILER_URL,
@@ -80,14 +124,13 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         stdin : input,
         files : [
           {
-            name : 'index',
+            name : fileName,
             content : codeToRun
           }
         ]
       }
     };
 
-    const supabase = initSupabase();
     const tableName = 'LCDB';
 
     let actualOutput = ''; // Declare actualOutput here
@@ -168,7 +211,7 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
 
   
   const handleSubmissionAndTestCases = async (submissionData, testCasesData) => {
-    const supabase = initSupabase();
+    
   
     // Store submission
     const submissionResponse = await supabase
@@ -210,6 +253,10 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
       try {
         return JSON.parse(jsonString);
       } catch (e) {
+
+        if (jsonString.toLowerCase() === "true" || jsonString.toLowerCase() === "false") {
+          return jsonString.toLowerCase();
+        }
         return jsonString; // Return the original string if parsing fails
       }
     }
@@ -380,7 +427,9 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
 
 
         <div className="right-container flex flex-grow-1 w-[50%] flex-col">
-        <TestCasesPopup problemId={id} /> {/* Add this line where you want the popup to appear, assuming 'id' is the problem ID */}
+        {/* <TestCasesPopup problemId={id} /> */}
+        
+         {/* Add this line where you want the popup to appear, assuming 'id' is the problem ID */}
         <div style={{ height: '50px' }}></div> {/* Adjust height as needed */}
 
           <OutputWindow outputDetails={outputDetails} testResults={testResults} />

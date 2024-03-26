@@ -11,6 +11,16 @@ export const fetchProblems = async (supabase, tableName) => {
  return data;
 };
 
+export const fetchStarterCode = async (supabase, language, id) => {
+  const { data, error } = await supabase.from('starter_code').select(language).eq('id', id).single();
+  console.log(data);
+  if (error) {
+    console.error('Error fetching starter code:', error);
+    return { error };
+  }
+  return { starterCode: data ? data[language]: null };
+}
+
 export const fetchProblemById = async (supabase, tableName, id) => {
     const { data, error } = await supabase.from(tableName).select('*').eq('id', id);
     if (error) throw error;
