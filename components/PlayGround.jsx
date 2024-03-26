@@ -431,8 +431,8 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
         
          {/* Add this line where you want the popup to appear, assuming 'id' is the problem ID */}
         <div style={{ height: '50px' }}></div> {/* Adjust height as needed */}
+        <OutputWindow testResults={testResults} />
 
-          <OutputWindow outputDetails={outputDetails} testResults={testResults} />
           <div className="flex flex-col items-end">
 
           <button
