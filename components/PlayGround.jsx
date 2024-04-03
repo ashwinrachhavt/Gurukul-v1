@@ -296,8 +296,10 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
     }
   
     // Parse and compare each test case
-    const parsedActual = actual.split('\n').map(safeParseJSON);
-    const parsedExpected = expected.split('\n').map(safeParseJSON);
+    //const parsedActual = actual.split('\n').map(safeParseJSON);
+    //const parsedExpected = expected.split('\n').map(safeParseJSON);
+    const parsedActual = actual.trim().split('\n').map(line => line.trim());
+    const parsedExpected = expected.trim().split('\n').map(line => line.trim());
   
     let passedTests = 0;
     const failedTestCases = [];
@@ -484,8 +486,8 @@ const Landing = ({ tags, difficulty, acceptance, id  })=> {
           {testResults.passedTests > 0 ? (
             <>
               <p>Success Rate: {testResults.successRate}</p>
-              <p>Passed Test Cases: {testResults.passedTestCases}</p>
-              <p>Failed Test Cases: {testResults.failedTestIndices.slice(0, -1).join(", ")}</p>
+              <p>Passed Test Cases: {testResults.passedTests}</p>
+              <p>Failed Test Case Indices: {testResults.failedTestIndices.join(',')}</p>
             </>
           ) : (
             <div className="text-red-500">
